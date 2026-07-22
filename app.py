@@ -1,11 +1,49 @@
 
 
+
 import streamlit as st
 import requests
 import pandas as pd
 from io import BytesIO
+from openai import OpenAI
 
+# -------------------------------
+# PASSWORD PROTECTION
+# -------------------------------
 
+APP_PIN = st.secrets["APP_PIN"]
+
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+
+    st.title("🔒 Secure Access")
+
+    pin = st.text_input(
+        "Enter PIN",
+        type="password"
+    )
+
+    if st.button("Login"):
+
+        if pin == APP_PIN:
+
+            st.session_state.authenticated = True
+            st.rerun()
+
+        else:
+
+            st.error("Incorrect PIN")
+
+    st.stop()
+
+# -------------------------------
+# YOUR EXISTING APP STARTS HERE
+# -------------------------------
+
+st.set_page_config(...)
+...
 
 from openai import OpenAI
 
