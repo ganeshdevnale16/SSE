@@ -1,15 +1,21 @@
-
-
-
 import streamlit as st
 import requests
 import pandas as pd
 from io import BytesIO
 from openai import OpenAI
 
-# -------------------------------
-# PASSWORD PROTECTION
-# -------------------------------
+# ------------------------------------
+# MUST BE FIRST STREAMLIT COMMAND
+# ------------------------------------
+
+st.set_page_config(
+    page_title="Social Search",
+    layout="wide"
+)
+
+# ------------------------------------
+# PASSWORD
+# ------------------------------------
 
 APP_PIN = st.secrets["APP_PIN"]
 
@@ -28,28 +34,23 @@ if not st.session_state.authenticated:
     if st.button("Login"):
 
         if pin == APP_PIN:
-
             st.session_state.authenticated = True
             st.rerun()
 
         else:
-
             st.error("Incorrect PIN")
 
     st.stop()
 
-# -------------------------------
-# YOUR EXISTING APP STARTS HERE
-# -------------------------------
-
-st.set_page_config(...)
-...
-
-from openai import OpenAI
+# ------------------------------------
+# OPENAI
+# ------------------------------------
 
 client = OpenAI(
     api_key=st.secrets["OPENAI_API_KEY"]
 )
+
+SERPER_API_KEY = st.secrets["SERPER_API_KEY"]
 
 def optimize_query(user_query):
 
