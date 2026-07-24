@@ -145,6 +145,18 @@ platforms = st.multiselect(
     ],
     default=["Facebook"]
 )
+past = st.selectbox(
+    "Past",
+    [
+        "Any Time",
+        "Past Hour",
+        "Past 24 Hours",
+        "Past Week",
+        "Past Month",
+        "Past Year"
+    ],
+    index=0
+)
 
 # num_results = st.slider(
 #     "Number of Results",
@@ -154,6 +166,14 @@ platforms = st.multiselect(
 #     10
 # )
 MAX_RESULTS = 10
+PAST_MAP = {
+    "Any Time": None,
+    "Past Hour": "qdr:h",
+    "Past 24 Hours": "qdr:d",
+    "Past Week": "qdr:w",
+    "Past Month": "qdr:m",
+    "Past Year": "qdr:y"
+}
 # # ==========================================================
 # # BUILD QUERY
 # # ==========================================================
@@ -195,17 +215,27 @@ MAX_RESULTS = 10
 # SEARCH
 # ==========================================================
 
-def search_google(query):
+# def search_google(query):
+def search_google(query, past):
 
     headers = {
         "X-API-KEY": SERPER_API_KEY,
         "Content-Type": "application/json"
     }
 
+    # payload = {
+    #     "q": query,
+    #     "num": MAX_RESULTS
+    # }
     payload = {
         "q": query,
         "num": MAX_RESULTS
     }
+    
+    tbs = PAST_MAP.get(past)
+    
+    if tbs:
+        payload["tbs"] = tbs
 
     response = requests.post(
         SERPER_URL,
@@ -298,7 +328,11 @@ if st.button("Search", use_container_width=True):
 
             st.info(f"Searching : {query}")
 
-            result = search_google(query)
+            # result = search_google(query)
+            result = search_google(
+                query=query,
+                past=past
+            )
 
             organic = result.get("organic", [])
 
